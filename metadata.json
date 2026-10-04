@@ -1,0 +1,6 @@
+{
+  "name": "উমারখালী কিস্তুপুর প্রবাসী যুব সংঘ | Umarkhali Kistupur Probashi Jubo Songho",
+  "description": "উমারখালী কিস্তুপুর প্রবাসী যুব সংঘ - একটি অলাভজনক ইসলামি ও সামাজিক কল্যাণমূলক সংগঠন। মানবতার সেবায়, সমাজের কল্যাণে।",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
