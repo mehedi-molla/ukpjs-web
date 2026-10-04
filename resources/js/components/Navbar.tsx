@@ -24,7 +24,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     { id: 'home', label: t('হোম', 'Home') },
     { id: 'about', label: t('পরিচিতি', 'About') },
     { id: 'projects', label: t('প্রকল্প', 'Projects') },
-    { id: 'emergency', label: t('জরুরি সেবা', 'Emergency') },
+    { id: 'emergency-services', label: t('জরুরি সেবা', 'Emergency') },
     { id: 'blood-donors', label: t('রক্তদান', 'Blood Donors') },
     { id: 'contact', label: t('যোগাযোগ', 'Contact') },
   ];

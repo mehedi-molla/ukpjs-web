@@ -21,6 +21,7 @@ use App\Http\Controllers\Public\BloodDonorController;
 use App\Http\Controllers\Public\ContactMessageController;
 use App\Http\Controllers\Public\ContentController;
 use App\Http\Controllers\Public\DonationSubmissionController;
+use App\Http\Controllers\Public\EmergencyServiceController;
 use App\Http\Controllers\Public\HomeController;
 use App\Http\Controllers\Public\ProjectController;
 use App\Http\Controllers\Public\WelfareController;
@@ -31,6 +32,8 @@ Route::get('/projects', [ProjectController::class, 'index'])->name('projects.ind
 Route::get('/projects/{project:slug}', [ProjectController::class, 'show'])->name('projects.show');
 Route::get('/about', [ContentController::class, 'show'])->defaults('page', 'about')->name('about');
 Route::get('/emergency-contacts', [ContentController::class, 'show'])->defaults('page', 'emergency')->name('emergency');
+Route::get('/emergency', [EmergencyServiceController::class, 'index'])->name('emergency-services');
+Route::get('/emergency/{category}', [EmergencyServiceController::class, 'show'])->where('category', '[a-z0-9-]+')->name('emergency-services.show');
 Route::get('/contact', [ContentController::class, 'show'])->defaults('page', 'contact')->name('contact');
 Route::get('/blood-donors', [ContentController::class, 'show'])->defaults('page', 'blood-donors')->name('blood-donors');
 Route::get('/donate', [ContentController::class, 'show'])->defaults('page', 'donation')->name('donate');

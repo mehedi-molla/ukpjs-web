@@ -1,4 +1,3 @@
-import { router } from '@inertiajs/react';
 import { PublicLayout } from '../../Layouts/PublicLayout';
 import { AboutPage } from '../../pages/public/AboutPage';
 import { BloodDonorsPage } from '../../pages/public/BloodDonorsPage';
@@ -10,6 +9,7 @@ import { NoticesPage } from '../../pages/public/NoticesPage';
 import { TransparencyPage } from '../../pages/public/TransparencyPage';
 import { WelfareApplyPage } from '../../pages/public/WelfareApplyPage';
 import type { BloodDonor, FinancialSummary, ImportantContact, Member, Notice, Project, Transaction, WebsiteSettings } from '../../types';
+import { navigateToPage as navigate } from '../../utils/navigation';
 
 interface Props {
     page: string;
@@ -24,16 +24,6 @@ interface Props {
 }
 
 export default function Content({ page, settings, contacts, notices, projects, financials, transactions, members, bloodDonors }: Props) {
-    const navigate = (target: string) => {
-        const routes: Record<string, string> = {
-            home: '/', about: '/about', projects: '/projects', emergency: '/emergency-contacts',
-            'blood-donors': '/blood-donors', contact: '/contact', donation: '/donate', notices: '/notices',
-            transparency: '/transparency', welfare: '/welfare/apply', committee: '/committee', login: '/login',
-            'admin-dashboard': '/admin/dashboard', 'member-dashboard': '/member/dashboard',
-        };
-        if (routes[target]) router.visit(routes[target]);
-    };
-
     let content: React.ReactNode;
     switch (page) {
         case 'about': content = <AboutPage setCurrentPage={navigate} initialSettings={settings} />; break;

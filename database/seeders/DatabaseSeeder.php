@@ -311,6 +311,8 @@ class DatabaseSeeder extends Seeder
             }
         });
 
+        $this->call(EmergencyServiceSeeder::class);
+
         $this->command?->info('UKPJS prototype data imported as demo data. Set UKPJS_SEED_ADMIN_PASSWORD before seeding non-demo credentials.');
     }
 }

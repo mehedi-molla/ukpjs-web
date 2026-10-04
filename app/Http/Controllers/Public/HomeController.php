@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\EmergencyServiceResource;
 use App\Http\Resources\ProjectResource;
 use App\Models\Contact;
+use App\Models\ContactCategory;
 use App\Models\Notice;
 use App\Models\Project;
 use App\Models\Transaction;
@@ -29,6 +31,7 @@ class HomeController extends Controller
             'contacts' => Contact::query()->with(['category', 'media'])->where('is_published', true)->orderBy('sort_order')->get()->map(fn (Contact $contact): array => $this->contact($contact))->values(),
             'notices' => Notice::query()->where('is_active', true)->latest('publish_date')->limit(5)->get()->map(fn (Notice $notice): array => $this->notice($notice))->values(),
             'financials' => $this->financials($validTransactions, $income, $expense),
+            'emergencyServices' => EmergencyServiceResource::collection(ContactCategory::query()->emergencyServices()->where('is_home_featured', true)->get())->resolve(),
         ]);
     }
 

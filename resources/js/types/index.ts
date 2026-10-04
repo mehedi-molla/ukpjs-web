@@ -356,3 +356,34 @@ export interface FinancialSummary {
   lastMonthIncome: number;
   lastMonthExpense: number;
 }
+
+// Emergency service category (a flagged contact category), served at /emergency/{slug}
+export interface EmergencyService {
+  id: string;
+  slug: string;
+  url: string;
+  nameBn: string;
+  nameEn: string;
+  descriptionBn: string;
+  descriptionEn: string;
+  icon: string | null;
+  isHomeFeatured: boolean;
+}
+
+// One published contact inside an emergency service category
+export interface EmergencyEntry {
+  id: string;
+  nameBn: string;
+  nameEn: string;
+  photoUrl: string | null;
+  phone: string | null;
+  designationBn: string | null;
+  designationEn: string | null;
+  serviceArea: string | null;
+  availability: string | null;
+  addressBn: string | null;
+  addressEn: string | null;
+  area: string | null;
+  isVerified: boolean;
+  isDemo: boolean;
+}

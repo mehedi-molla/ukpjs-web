@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import { Link } from '@inertiajs/react';
 import { useLanguage } from '../../context/LanguageContext';
-import { Project, FinancialSummary, ImportantContact, Notice } from '../../types';
+import { Project, FinancialSummary, ImportantContact, Notice, EmergencyService } from '../../types';
 import { formatCurrency, toBengaliNumber, formatDate } from '../../utils/formatters';
 import { 
   Users, 
@@ -29,6 +30,7 @@ import {
   Radio,
   Car
 } from 'lucide-react';
+import { EmergencyServiceCard } from '../../components/EmergencyServiceCard';
 
 interface HomePageProps {
   setCurrentPage: (page: string) => void;
@@ -38,6 +40,7 @@ interface HomePageProps {
     projects?: Project[];
     contacts?: ImportantContact[];
     notices?: Notice[];
+    emergencyServices?: EmergencyService[];
   };
 }
 
@@ -189,6 +192,7 @@ export const HomePage: React.FC<HomePageProps> = ({ setCurrentPage, setSelectedP
   const [projects, setProjects] = useState<Project[]>(initialData?.projects ?? []);
   const [contacts, setContacts] = useState<ImportantContact[]>(initialData?.contacts ?? []);
   const [notices, setNotices] = useState<Notice[]>(initialData?.notices ?? []);
+  const emergencyServices = initialData?.emergencyServices ?? [];
   const [loading] = useState(false);
 
   const completedProjects = projects.filter(p => p.status === 'completed');
@@ -202,8 +206,6 @@ export const HomePage: React.FC<HomePageProps> = ({ setCurrentPage, setSelectedP
   const wardMembers = dbWardMembers.length > 0 ? dbWardMembers : safeFallbackWardMembers;
   const wardMember = wardMembers[0] || safeFallbackWardMembers[0];
 
-  // Emergency highlights only use administrator-supplied, verified contacts.
-  const verifiedEmergencyContacts = contacts.filter(c => c.isEmergency && c.isPublished !== false && c.isVerified && !c.isDemoPlaceholder && Boolean(c.phone));
   const canCall = (contact: ImportantContact) => Boolean(contact.phone && contact.isVerified && !contact.isDemoPlaceholder);
 
   const handleProjectClick = (slug: string) => {
@@ -841,31 +843,28 @@ export const HomePage: React.FC<HomePageProps> = ({ setCurrentPage, setSelectedP
       </section>
 
       {/* 6. EMERGENCY SERVICES SECTION (জরুরি সেবা - Placed Right Above the Footer) */}
-      {verifiedEmergencyContacts.length > 0 && (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="p-6 sm:p-8 rounded-3xl bg-white border border-stone-200 shadow-sm space-y-6">
-            <div className="flex items-center justify-between gap-4 pb-4 border-b border-stone-100">
-              <div>
-                <span className="text-xs font-semibold text-rose-700">{t('যাচাইকৃত জরুরি যোগাযোগ', 'Verified emergency contacts')}</span>
-                <h2 className="mt-1 text-2xl font-serif font-bold text-stone-900">{t('তাৎক্ষণিক যোগাযোগ', 'Immediate contacts')}</h2>
-              </div>
-              <button onClick={() => setCurrentPage('emergency')} className="text-xs font-semibold text-rose-700 hover:text-rose-900 cursor-pointer">{t('পূর্ণাঙ্গ ডিরেক্টরি', 'Full directory')}</button>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {verifiedEmergencyContacts.slice(0, 6).map(contact => (
-                <div key={contact.id} className="rounded-2xl border border-stone-200 bg-stone-50 p-4 flex items-center gap-3">
-                  {contact.photoUrl ? <img src={contact.photoUrl} alt={contact.nameBn} className="w-14 h-14 rounded-xl object-cover" /> : <div className="w-14 h-14 rounded-xl bg-rose-100 flex items-center justify-center"><PhoneCall className="w-5 h-5 text-rose-700" /></div>}
-                  <div className="min-w-0 flex-1">
-                    <h3 className="font-bold text-sm text-stone-900 truncate">{isBn ? contact.nameBn : contact.nameEn}</h3>
-                    <p className="text-xs text-stone-500 truncate">{isBn ? contact.categoryNameBn : (contact.categoryNameEn || contact.categoryNameBn)}</p>
-                    <a href={`tel:${contact.phone}`} className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-rose-700"><PhoneCall className="w-3 h-3" />{contact.phone}</a>
-                  </div>
-                </div>
-              ))}
-            </div>
+      <section id="emergency-services" aria-labelledby="emergency-services-heading" className="max-w-7xl mx-auto px-4 sm:px-6">
+        <div className="p-6 sm:p-8 rounded-3xl bg-white border border-stone-200 shadow-sm space-y-6">
+          <div className="pb-4 border-b border-stone-100">
+            <span className="text-xs font-semibold text-rose-700">{t('দ্রুত সহায়তা', 'Quick help')}</span>
+            <h2 id="emergency-services-heading" className="mt-1 text-2xl font-serif font-bold text-stone-900">{t('জরুরি সেবা', 'Emergency Services')}</h2>
           </div>
-        </section>
-      )}
+          <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+            {emergencyServices.map(service => (
+              <EmergencyServiceCard key={service.id} service={service} />
+            ))}
+          </ul>
+          <div className="flex justify-center">
+            <Link
+              href="/emergency"
+              className="px-6 py-3 text-sm font-semibold text-white bg-rose-700 hover:bg-rose-600 rounded-xl shadow-md transition-colors inline-flex items-center gap-2"
+            >
+              <span>{t('সকল সেবা দেখুন', 'View All Services')}</span>
+              <ArrowRight className="w-4 h-4" aria-hidden="true" />
+            </Link>
+          </div>
+        </div>
+      </section>
 
       {/* Legacy prototype directory retained for reference; it is never rendered. */}
       {false && (
