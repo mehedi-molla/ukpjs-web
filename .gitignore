@@ -12,3 +12,4 @@ coverage/
 .phpunit.result.cache
 .env*
 !.env.example
+public/hot
