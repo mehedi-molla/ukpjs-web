@@ -77,10 +77,11 @@ export const AdminTransactions: React.FC<AdminTransactionsProps> = ({
         setCancelReason('');
         fetchTransactions();
       } else {
-        showToast('বাতিলকরণ ব্যর্থ হয়েছে', 'error');
-      }
-    } catch {
-      showToast('সার্ভার সংযোগ ত্রুটি', 'error');
+      showToast(t('বাতিলকরণ ব্যর্থ হয়েছে', 'Cancellation failed'), 'error');
+    }
+  } catch (e) {
+    console.error(e);
+    showToast(t('সার্ভার সংযোগ ত্রুটি', 'Server connection error'), 'error');
     } finally {
       setIsCanceling(false);
     }
@@ -254,7 +255,7 @@ export const AdminTransactions: React.FC<AdminTransactionsProps> = ({
                   <td className="px-4 py-3 max-w-xs">
                     <div className="font-medium text-stone-900 truncate">
                       {trx.type === 'income' 
-                        ? (trx.isAnonymous ? t('গোপনীয় দানশীল ভাই', 'Anonymous') : (trx.memberName || trx.donorName || 'সাধারণ শুভাকাঙ্ক্ষী'))
+                        ? (trx.isAnonymous ? t('গোপনীয় দানশীল ভাই', 'Anonymous') : (trx.memberName || trx.donorName || t('সাধারণ শুভাকাঙ্ক্ষী', 'General Well-wisher')))
                         : (trx.paidTo || trx.categoryName)}
                     </div>
                     {trx.description && <p className="text-[11px] text-stone-400 italic truncate">{trx.description}</p>}

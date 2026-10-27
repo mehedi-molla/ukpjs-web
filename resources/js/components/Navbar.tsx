@@ -18,6 +18,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   const { user, isAdmin, logout } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isRoleMenuOpen, setIsRoleMenuOpen] = useState(false);
+  const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
 
   // All primary menu links displayed directly in a single line (no "More" dropdown)
   const navLinks = [
@@ -77,14 +78,47 @@ export const Navbar: React.FC<NavbarProps> = ({
           )}
 
           {/* Language Switcher */}
-          <button
-            onClick={toggleLang}
-            className="flex items-center gap-1 px-2 sm:px-2.5 py-1.5 text-xs font-medium text-stone-300 hover:text-white bg-stone-800/80 hover:bg-stone-800 rounded-lg border border-stone-700/60 transition-colors whitespace-nowrap cursor-pointer"
-            title="Toggle Language"
-          >
-            <Globe className="w-3.5 h-3.5 text-emerald-400" />
-            <span>{lang === 'bn' ? 'English' : 'বাংলা'}</span>
-          </button>
+          <div className="relative">
+            <button
+              onClick={() => setIsLangMenuOpen(!isLangMenuOpen)}
+              className="flex items-center gap-1 px-2 sm:px-2.5 py-1.5 text-xs font-medium text-stone-300 hover:text-white bg-stone-800/80 hover:bg-stone-800 rounded-lg border border-stone-700/60 transition-colors whitespace-nowrap cursor-pointer"
+              title="Change Language"
+            >
+              <Globe className="w-3.5 h-3.5 text-emerald-400" />
+              <span>{lang === 'bn' ? 'বাংলা' : 'English'}</span>
+              <ChevronDown className="w-3 h-3 text-stone-400" />
+            </button>
+
+            {isLangMenuOpen && (
+              <div
+                className="absolute right-0 mt-2 w-32 bg-stone-900 border border-stone-800 rounded-xl shadow-2xl py-1 z-50 text-xs text-stone-200"
+                onMouseLeave={() => setIsLangMenuOpen(false)}
+              >
+                <button
+                  onClick={() => {
+                    if (lang !== 'bn') toggleLang();
+                    setIsLangMenuOpen(false);
+                  }}
+                  className={`w-full text-left px-3 py-2 hover:bg-stone-800 transition-colors cursor-pointer ${
+                    lang === 'bn' ? 'text-emerald-400 font-semibold' : 'text-stone-200 hover:text-white'
+                  }`}
+                >
+                  বাংলা
+                </button>
+                <button
+                  onClick={() => {
+                    if (lang !== 'en') toggleLang();
+                    setIsLangMenuOpen(false);
+                  }}
+                  className={`w-full text-left px-3 py-2 hover:bg-stone-800 transition-colors cursor-pointer ${
+                    lang === 'en' ? 'text-emerald-400 font-semibold' : 'text-stone-200 hover:text-white'
+                  }`}
+                >
+                  English
+                </button>
+              </div>
+            )}
+          </div>
 
           {/* User / Dashboard Action */}
           {user ? (

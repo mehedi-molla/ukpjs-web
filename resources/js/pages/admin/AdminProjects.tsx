@@ -119,10 +119,11 @@ export const AdminProjects: React.FC = () => {
         setIsModalOpen(false);
         fetchProjects();
       } else {
-        showToast('সংরক্ষণ ব্যর্থ হয়েছে', 'error');
+        showToast(t('সংরক্ষণ ব্যর্থ হয়েছে', 'Save failed'), 'error');
       }
-    } catch {
-      showToast('সার্ভার ত্রুটি', 'error');
+    } catch (e) {
+      console.error(e);
+      showToast(t('সার্ভার ত্রুটি', 'Server error'), 'error');
     } finally {
       setIsSubmitting(false);
     }

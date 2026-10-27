@@ -6,8 +6,10 @@ use App\Actions\Ledger\CreateTransactionAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\ReviewWelfareRequest;
 use App\Http\Requests\Admin\WelfareFilterRequest;
+use App\Models\AuditLog;
 use App\Models\WelfareRequest as WelfareRequestModel;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -56,5 +58,25 @@ class WelfareController extends Controller
         });
 
         return back()->with('success', 'Welfare request updated safely.');
+    }
+
+    public function destroy(WelfareRequestModel $welfareRequest, Request $request): RedirectResponse
+    {
+        $trackingNo = $welfareRequest->tracking_no;
+        $applicantName = $welfareRequest->applicant_name;
+
+        $welfareRequest->delete();
+
+        \App\Models\AuditLog::create([
+            'user_id' => $request->user()?->id,
+            'action' => 'deleted',
+            'module' => 'welfare',
+            'record_type' => WelfareRequestModel::class,
+            'record_id' => (string) $welfareRequest->id,
+            'details' => "Welfare request '{$trackingNo}' for {$applicantName} permanently deleted.",
+            'ip_address' => $request->ip(),
+        ]);
+
+        return back()->with('success', 'Welfare request deleted successfully.');
     }
 }

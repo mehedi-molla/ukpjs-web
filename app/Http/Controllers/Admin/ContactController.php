@@ -83,6 +83,43 @@ class ContactController extends Controller
         return back()->with('success', 'Contact archived from public view.');
     }
 
+    public function unarchive(Contact $contact): RedirectResponse
+    {
+        $contact->update(['is_published' => true]);
+        AuditLog::create([
+            'user_id' => request()->user()->id,
+            'action' => 'unarchived',
+            'module' => 'contacts',
+            'record_type' => Contact::class,
+            'record_id' => (string) $contact->id,
+            'details' => 'Contact restored to public directory.',
+            'new_values' => ['is_published' => true],
+            'ip_address' => request()->ip(),
+        ]);
+
+        return back()->with('success', 'Contact unarchived successfully.');
+    }
+
+    public function destroy(Contact $contact): RedirectResponse
+    {
+        $name = $contact->name_en ?? $contact->name_bn ?? $contact->id;
+        $contact->clearMediaCollection('portrait');
+        $contact->clearMediaCollection('vehicle');
+        $contact->delete();
+
+        AuditLog::create([
+            'user_id' => request()->user()->id,
+            'action' => 'deleted',
+            'module' => 'contacts',
+            'record_type' => Contact::class,
+            'record_id' => (string) $contact->id,
+            'details' => "Contact '{$name}' permanently deleted.",
+            'ip_address' => request()->ip(),
+        ]);
+
+        return back()->with('success', 'Contact deleted successfully.');
+    }
+
     private function present(Contact $contact): array
     {
         return [

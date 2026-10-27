@@ -81,6 +81,26 @@ class ProjectController extends Controller
         return back()->with('success', 'Project archived from public view.');
     }
 
+    public function destroy(Project $project): RedirectResponse
+    {
+        $title = $project->title_en ?? $project->title_bn ?? $project->code ?? $project->id;
+        $project->clearMediaCollection('featured');
+        $project->clearMediaCollection('gallery');
+        $project->delete();
+
+        AuditLog::create([
+            'user_id' => request()->user()->id,
+            'action' => 'deleted',
+            'module' => 'projects',
+            'record_type' => Project::class,
+            'record_id' => (string) $project->id,
+            'details' => "Project '{$title}' permanently deleted.",
+            'ip_address' => request()->ip(),
+        ]);
+
+        return back()->with('success', 'Project deleted successfully.');
+    }
+
     private function attachMedia(Project $project, StoreProjectRequest $request, mixed $featured, array $gallery): void
     {
         if ($request->hasFile('featured_image_file')) {

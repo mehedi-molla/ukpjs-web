@@ -69,4 +69,22 @@ class MemberController extends Controller
 
         return back()->with('success', 'Member deactivated and contribution history retained.');
     }
+
+    public function destroy(Member $member): RedirectResponse
+    {
+        $name = $member->name_en ?? $member->name_bn ?? $member->member_no ?? $member->id;
+        $member->delete();
+
+        AuditLog::create([
+            'user_id' => request()->user()->id,
+            'action' => 'deleted',
+            'module' => 'members',
+            'record_type' => Member::class,
+            'record_id' => (string) $member->id,
+            'details' => "Member '{$name}' permanently deleted.",
+            'ip_address' => request()->ip(),
+        ]);
+
+        return back()->with('success', 'Member deleted successfully.');
+    }
 }

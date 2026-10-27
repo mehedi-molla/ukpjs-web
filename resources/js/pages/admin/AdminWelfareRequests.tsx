@@ -82,10 +82,11 @@ export const AdminWelfareRequests: React.FC = () => {
         setActiveReq(null);
         fetchRequests();
       } else {
-        showToast('প্রক্রিয়াকরণ ব্যর্থ হয়েছে', 'error');
+        showToast(t('প্রক্রিয়াকরণ ব্যর্থ হয়েছে', 'Processing failed'), 'error');
       }
-    } catch {
-      showToast('সার্ভার ত্রুটি', 'error');
+    } catch (e) {
+      console.error(e);
+      showToast(t('সার্ভার ত্রুটি', 'Server error'), 'error');
     } finally {
       setIsProcessing(false);
     }

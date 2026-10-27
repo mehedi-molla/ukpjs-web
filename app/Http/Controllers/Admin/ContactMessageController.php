@@ -45,4 +45,22 @@ class ContactMessageController extends Controller
 
         return back()->with('success', 'Contact message status updated.');
     }
+
+    public function destroy(ContactMessage $contactMessage): RedirectResponse
+    {
+        $name = $contactMessage->name ?? $contactMessage->phone ?? $contactMessage->id;
+        $contactMessage->delete();
+
+        AuditLog::create([
+            'user_id' => request()->user()->id,
+            'action' => 'deleted',
+            'module' => 'contact_messages',
+            'record_type' => ContactMessage::class,
+            'record_id' => (string) $contactMessage->id,
+            'details' => "Contact message from '{$name}' permanently deleted.",
+            'ip_address' => request()->ip(),
+        ]);
+
+        return back()->with('success', 'Contact message deleted successfully.');
+    }
 }

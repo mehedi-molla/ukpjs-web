@@ -52,4 +52,22 @@ class NoticeController extends Controller
 
         return back()->with('success', 'Notice archived from public view.');
     }
+
+    public function destroy(Notice $notice): RedirectResponse
+    {
+        $title = $notice->title_en ?? $notice->title_bn ?? $notice->id;
+        $notice->delete();
+
+        AuditLog::create([
+            'user_id' => request()->user()->id,
+            'action' => 'deleted',
+            'module' => 'notices',
+            'record_type' => Notice::class,
+            'record_id' => (string) $notice->id,
+            'details' => "Notice '{$title}' permanently deleted.",
+            'ip_address' => request()->ip(),
+        ]);
+
+        return back()->with('success', 'Notice deleted successfully.');
+    }
 }
